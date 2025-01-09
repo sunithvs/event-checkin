@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #4F46E5;
+  --primary-dark: #4338CA;
+  --primary-light: #6366F1;
+  --background: #F9FAFB;
+  --foreground: #111827;
+  --muted: #6B7280;
+  --muted-foreground: #9CA3AF;
+  --border: #E5E7EB;
+  --input: #F3F4F6;
+  --ring: rgb(79 70 229 / 0.2);
+}
+
+@layer base {
+  body {
+    @apply bg-[--background] text-[--foreground] antialiased;
+  }
+}
+
+@layer components {
+  .input-search {
+    @apply w-full rounded-xl border-0 bg-white px-4 py-3.5 text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[--primary] sm:text-sm sm:leading-6 transition-shadow duration-200;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-[--primary] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[--primary-dark] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[--primary] transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl;
+  }
+
+  .card-interactive {
+    @apply cursor-pointer hover:scale-[1.02] active:scale-[0.98];
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  80%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  @apply before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-[--primary] before:animate-[pulse-ring_2s_cubic-bezier(0.25,0.46,0.45,0.94)_infinite];
+}
