@@ -7,7 +7,6 @@ import { AttendeeProfile } from '@/components/AttendeeProfile';
 import { createClient } from '@/utils/supabase/client';
 import { toast } from 'sonner';
 import { Toaster } from 'sonner';
-import {redirect} from "next/navigation";
 
 interface Attendee {
   id: string;
@@ -18,7 +17,7 @@ interface Attendee {
   checked_in_at?: string;
 }
 
-export default async function CheckInPage() {
+export default function CheckInPage() {
   const [isScanning, setIsScanning] = useState(true);
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const supabase = createClient();
@@ -56,83 +55,62 @@ export default async function CheckInPage() {
     setIsScanning(true);
   }, []);
 
-   const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/sign-in");
-  }
-
-
   return (
     <>
-      <Toaster position="top-center" richColors />
-      <div className="min-h-screen bg-[--background]">
-        <div className="max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-              Event Check-In
-            </h1>
-            <p className="text-lg text-[--muted]">
-              Welcome attendees by scanning their QR code or searching by name
+      <Toaster position="top-center" />
+      <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900">Attendee Check-In</h1>
+            <p className="mt-2 text-sm text-gray-600">
+              Scan a QR code or search by name/email to check in an attendee
             </p>
           </div>
 
           {attendee ? (
-            <div className="max-w-lg mx-auto space-y-6 animate-float">
-              <AttendeeProfile 
-                attendee={attendee} 
+            <div className="space-y-4">
+              <AttendeeProfile
+                attendee={attendee}
                 onCheckInComplete={resetScan}
               />
               <button
                 onClick={resetScan}
-                className="btn-secondary w-full"
+                className="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Check In Another Attendee
+                Search Another
               </button>
             </div>
           ) : (
-            <div className="max-w-2xl mx-auto">
-              <div className="card space-y-8">
-                <div className="flex justify-center space-x-4">
-                  <button
-                    onClick={() => setIsScanning(true)}
-                    className={isScanning ? 'btn-primary' : 'btn-secondary'}
-                  >
-                    <svg 
-                      className="w-5 h-5 mr-2" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2m0 0H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Scan QR
-                  </button>
-                  <button
-                    onClick={() => setIsScanning(false)}
-                    className={!isScanning ? 'btn-primary' : 'btn-secondary'}
-                  >
-                    <svg 
-                      className="w-5 h-5 mr-2" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Search
-                  </button>
-                </div>
+            <div className="bg-white shadow rounded-lg p-6 space-y-6">
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={() => setIsScanning(true)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md ${
+                    isScanning
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-white text-gray-700 border border-gray-300'
+                  }`}
+                >
+                  Scan QR
+                </button>
+                <button
+                  onClick={() => setIsScanning(false)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md ${
+                    !isScanning
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-white text-gray-700 border border-gray-300'
+                  }`}
+                >
+                  Search
+                </button>
+              </div>
 
-                <div className="mt-8">
-                  {isScanning ? (
-                    <QRScanner onScan={handleEmailDetected} />
-                  ) : (
-                    <EmailSearch onSelect={handleAttendeeSelect} />
-                  )}
-                </div>
+              <div className="mt-8">
+                {isScanning ? (
+                  <QRScanner onScan={handleEmailDetected} />
+                ) : (
+                  <EmailSearch onSelect={handleAttendeeSelect} />
+                )}
               </div>
             </div>
           )}
