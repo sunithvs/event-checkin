@@ -216,7 +216,7 @@ export default function TicketPage({ params }) {
                 <Clock className="w-5 h-5 text-[#530315]" />
                 <div>
                   <p className="text-sm text-gray-500">Time</p>
-                  <p className="font-semibold">9:00 AM - 5:00 PM</p>
+                  <p className="font-semibold">9:00 AM onwards</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
