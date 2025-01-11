@@ -2,7 +2,7 @@
 import QRCode from "@/components/QRCode";
 import { createClient } from "../../../utils/supabase/client";
 import {useState, useEffect, use} from "react";
-import { X, User, Mail, Calendar, Clock, MapPin } from 'lucide-react';
+import { X, User, Mail, Calendar, Clock, MapPin, AlertCircle } from 'lucide-react';
 
 function getAttendeeDetails(attendeeId) {
   const supabase = createClient();
@@ -10,6 +10,12 @@ function getAttendeeDetails(attendeeId) {
     attendee_id: attendeeId,
   });
 }
+
+const ShimmerBlock = ({ className }) => (
+  <div className={`relative overflow-hidden bg-gray-200 ${className}`}>
+    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-gray-200 via-white to-gray-200 animate-shimmer" />
+  </div>
+);
 
 export default function TicketPage({ params }) {
   const resolvedParams = use(params);
@@ -36,16 +42,109 @@ export default function TicketPage({ params }) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-2xl">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
+          {/* Header */}
+          <div className="bg-[#530315] text-white p-6">
+            <ShimmerBlock className="h-8 w-3/4 rounded mb-2" />
+            <ShimmerBlock className="h-10 w-full rounded" />
+          </div>
+
+          {/* Main Content */}
+          <div className="p-6 flex flex-col md:flex-row gap-6">
+            {/* Left Section */}
+            <div className="flex-grow space-y-6">
+              {/* Attendee Details */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <ShimmerBlock className="w-5 h-5 rounded" />
+                  <div className="flex-1">
+                    <ShimmerBlock className="h-4 w-20 rounded mb-1" />
+                    <ShimmerBlock className="h-5 w-40 rounded" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <ShimmerBlock className="w-5 h-5 rounded" />
+                  <div className="flex-1">
+                    <ShimmerBlock className="h-4 w-20 rounded mb-1" />
+                    <ShimmerBlock className="h-5 w-48 rounded" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Event Details */}
+              <div className="space-y-4 border-t pt-4">
+                <div className="flex items-center gap-3">
+                  <ShimmerBlock className="w-5 h-5 rounded" />
+                  <div className="flex-1">
+                    <ShimmerBlock className="h-4 w-20 rounded mb-1" />
+                    <ShimmerBlock className="h-5 w-32 rounded" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <ShimmerBlock className="w-5 h-5 rounded" />
+                  <div className="flex-1">
+                    <ShimmerBlock className="h-4 w-20 rounded mb-1" />
+                    <ShimmerBlock className="h-5 w-36 rounded" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <ShimmerBlock className="w-5 h-5 rounded" />
+                  <div className="flex-1">
+                    <ShimmerBlock className="h-4 w-20 rounded mb-1" />
+                    <ShimmerBlock className="h-5 w-44 rounded" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Section - QR Code */}
+            <div className="flex flex-col items-center justify-center md:border-l md:pl-6">
+              <ShimmerBlock className="w-24 h-24 rounded-lg" />
+              <ShimmerBlock className="h-4 w-32 rounded mt-2" />
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="border-t px-6 py-4 bg-gray-50">
+            <ShimmerBlock className="h-4 w-full max-w-md mx-auto rounded" />
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error || !attendee) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-2xl text-red-500">Ticket not found</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
+          {/* Header */}
+          <div className="bg-[#530315] text-white p-6">
+            <h1 className="text-2xl font-bold tracking-tight">Ticket Not Found</h1>
+            <h2 className="text-lg tracking-tight mt-1 opacity-90">Unable to locate the requested ticket</h2>
+          </div>
+
+          {/* Main Content */}
+          <div className="p-8 flex flex-col items-center justify-center text-center">
+            <div className="bg-[#530315]/10 rounded-full p-4 mb-6">
+              <AlertCircle className="w-12 h-12 text-[#530315]" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              We couldn't find this ticket
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-md">
+              The ticket ID you're looking for doesn't exist or may have been removed. 
+              Please check if you have the correct ticket link.
+            </p>
+          </div>
+
+          {/* Footer */}
+          <div className="border-t px-6 py-4 bg-gray-50">
+            <p className="text-sm text-gray-500 text-center">
+              If you believe this is an error, please contact the event organizers
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
