@@ -1,6 +1,6 @@
 'use client';
 
-import {useCallback, useState, useEffect} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {QRScanner} from '@/components/QRScanner';
 import {EmailSearch} from '@/components/EmailSearch';
 import {AttendeeProfile} from '@/components/AttendeeProfile';
@@ -23,7 +23,7 @@ export default function CheckInPage() {
     const [attendee, setAttendee] = useState<Attendee | null>(null);
     const supabase = createClient();
     const [user, setUser] = useState<User | null>(null);
-
+    const [isVolunteer, setIsVolunteer] = useState(false);
     const handleEmailDetected = useCallback(async (email: string) => {
         try {
             const {data, error} = await supabase
@@ -48,6 +48,9 @@ export default function CheckInPage() {
         }
     }, [supabase]);
 
+    const check_volunteer = async () => {
+        return await supabase.from('volunteer_roles').select('*').single()
+    }
     const handleAttendeeSelect = (selectedAttendee: Attendee) => {
         setAttendee(selectedAttendee);
     };
@@ -67,6 +70,14 @@ export default function CheckInPage() {
                 redirect("/sign-in");
             } else {
                 setUser(user);
+                const {data, error} = await check_volunteer();
+                if (error) {
+                    toast.error('Failed to check if user is a volunteer');
+                    return;
+                }
+                if (data) {
+                    setIsVolunteer(true);
+                }
             }
         };
 
@@ -75,6 +86,20 @@ export default function CheckInPage() {
 
     if (!user) {
         return null;
+    }
+    if (!isVolunteer) {
+        return (
+            <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-2xl mx-auto space-y-8">
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold text-gray-900">Attendee Check-In</h1>
+                        <p className="mt-2 text-sm text-gray-600">
+                            You must be a volunteer to access this page
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
