@@ -3,6 +3,7 @@ import QRCode from "@/components/QRCode";
 import { createClient } from "../../../utils/supabase/client";
 import {useState, useEffect, use} from "react";
 import { X, User, Mail, Calendar, Clock, MapPin, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
 
 function getAttendeeDetails(attendeeId) {
   const supabase = createClient();
@@ -42,7 +43,7 @@ export default function TicketPage({ params }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
           {/* Header */}
           <div className="bg-[#530315] text-white p-6">
@@ -116,12 +117,23 @@ export default function TicketPage({ params }) {
 
   if (error || !attendee) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
           {/* Header */}
           <div className="bg-[#530315] text-white p-6">
-            <h1 className="text-2xl font-bold tracking-tight">Ticket Not Found</h1>
-            <h2 className="text-lg tracking-tight mt-1 opacity-90">Unable to locate the requested ticket</h2>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">Ticket Not Found</h1>
+                <h2 className="text-lg tracking-tight mt-1 opacity-90">Unable to locate the requested ticket</h2>
+              </div>
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={80}
+                height={80}
+                className="rounded-full bg-white p-2"
+              />
+            </div>
           </div>
 
           {/* Main Content */}
@@ -150,12 +162,23 @@ export default function TicketPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen to-gray-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto bg-white rounded-2xl overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="bg-[#530315] text-white p-6">
-          <h1 className="text-2xl font-bold tracking-tight">International Conclave on</h1>
-          <h2 className="text-3xl font-extrabold tracking-tight mt-1">Next-Gen Higher Education</h2>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">International Conclave on</h1>
+              <h2 className="text-3xl font-extrabold tracking-tight mt-1">Next-Gen Higher Education</h2>
+            </div>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={100}
+              height={100}
+              className="rounded-2xl bg-white p-2"
+            />
+          </div>
         </div>
 
         {/* Main Content */}
@@ -186,7 +209,7 @@ export default function TicketPage({ params }) {
                 <Calendar className="w-5 h-5 text-[#530315]" />
                 <div>
                   <p className="text-sm text-gray-500">Date</p>
-                  <p className="font-semibold">January 15, 2024</p>
+                  <p className="font-semibold">January 14 & 15, 2024</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
