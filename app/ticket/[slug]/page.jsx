@@ -1,22 +1,48 @@
 'use client';
 import QRCode from "@/components/QRCode";
 import { createClient } from "../../../utils/supabase/client";
-import {useState} from "react";
+import {useState, useEffect, use} from "react";
+import { X, User, Mail, Calendar, Clock, MapPin } from 'lucide-react';
 
-async function getAttendeeDetails(attendeeId) {
+function getAttendeeDetails(attendeeId) {
   const supabase = createClient();
-  const { data, error } = await supabase.rpc("get_attendee_details", {
+  return supabase.rpc("get_attendee_details", {
     attendee_id: attendeeId,
   });
-  if (error) throw error;
-  return data;
 }
 
-export default async function TicketPage({ params }) {
-  const attendee = await getAttendeeDetails(params.slug);
+export default function TicketPage({ params }) {
+  const resolvedParams = use(params);
+  const [attendee, setAttendee] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isQRExpanded, setIsQRExpanded] = useState(false);
 
-  if (!attendee || attendee.error) {
+  useEffect(() => {
+    const fetchAttendee = async () => {
+      try {
+        const { data, error } = await getAttendeeDetails(resolvedParams.slug);
+        if (error) throw error;
+        setAttendee(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAttendee();
+  }, [resolvedParams.slug]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-2xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !attendee) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="text-2xl text-red-500">Ticket not found</div>
@@ -116,9 +142,9 @@ export default async function TicketPage({ params }) {
             </button>
             <div className="flex flex-col items-center">
               <div className="bg-gray-100 p-8 rounded-lg mb-4">
-                <QrCode className="w-48 h-48 text-[#530315]" />
+                <QRCode className="w-48 h-48 text-[#530315]" />
               </div>
-              <p className="text-lg font-semibold">Ticket ID: {ticketData.ticketId}</p>
+              <p className="text-lg font-semibold">Ticket ID: {attendee.ticketId}</p>
               <p className="text-sm text-gray-500 mt-2">Scan this QR code at the venue entrance</p>
             </div>
           </div>
