@@ -24,6 +24,39 @@ export default function CheckInPage() {
     const supabase = createClient();
     const [user, setUser] = useState<User | null>(null);
     const [isVolunteer, setIsVolunteer] = useState(false);
+    const [checkedInCount, setCheckedInCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+
+    const fetchAttendeeCounts = async () => {
+        try {
+            // Get total count using count option
+            const { count: totalCount, error: totalError } = await supabase
+                .from('attendees')
+                .select('*', { count: 'exact', head: true });
+
+            if (totalError) {
+                console.error('Error fetching total count:', totalError);
+                return;
+            }
+
+            // Get checked-in count using count option
+            const { count: checkedInCount, error: checkedInError } = await supabase
+                .from('attendees')
+                .select('*', { count: 'exact', head: true })
+                .eq('checked_in', true);
+
+            if (checkedInError) {
+                console.error('Error fetching checked-in count:', checkedInError);
+                return;
+            }
+
+            setTotalCount(totalCount || 0);
+            setCheckedInCount(checkedInCount || 0);
+        } catch (error) {
+            console.error('Error fetching counts:', error);
+        }
+    };
+
     const handleEmailDetected = useCallback(async (email: string) => {
         try {
             const {data, error} = await supabase
@@ -83,6 +116,10 @@ export default function CheckInPage() {
 
         getUser();
     }, [supabase]);
+
+    useEffect(() => {
+        fetchAttendeeCounts();
+    }, []);
 
     if (!user) {
         return null;
@@ -158,6 +195,19 @@ export default function CheckInPage() {
                                 ) : (
                                     <EmailSearch onSelect={handleAttendeeSelect}/>
                                 )}
+                            </div>
+                            <div className="mt-4 p-4 bg-white rounded-lg shadow-sm">
+                                <h3 className="text-lg font-semibold text-gray-700 mb-2">Attendance Stats</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center p-3 bg-green-50 rounded-md">
+                                        <p className="text-2xl font-bold text-green-600">{checkedInCount}</p>
+                                        <p className="text-sm text-gray-600">Checked In</p>
+                                    </div>
+                                    <div className="text-center p-3 bg-blue-50 rounded-md">
+                                        <p className="text-2xl font-bold text-blue-600">{totalCount}</p>
+                                        <p className="text-sm text-gray-600">Total Attendees</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
