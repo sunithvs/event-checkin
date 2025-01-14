@@ -9,6 +9,7 @@ interface Attendee {
   phone_number?: string;
   checked_in: boolean;
   checked_in_at?: string;
+  metadata?: any;
 }
 
 interface EmailSearchProps {
@@ -126,6 +127,8 @@ export function EmailSearch({ onSelect }: EmailSearchProps) {
                       {attendee.phone_number}
                     </p>
                   )}
+{attendee.metadata && <p>{attendee.metadata['Institution Affl.']}</p>}
+{attendee.metadata && <p>{attendee.metadata['Designation']}</p>}
                 </div>
                 {attendee.checked_in && (
                   <span className="ml-4 inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">

@@ -16,6 +16,7 @@ interface Attendee {
     phone_number?: string;
     checked_in: boolean;
     checked_in_at?: string;
+    metadata?: any;
 }
 
 export default function CheckInPage() {
